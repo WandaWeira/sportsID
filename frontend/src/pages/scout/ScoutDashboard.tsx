@@ -18,9 +18,7 @@ import {
   useGetShortlistedPlayersQuery,
   useGetPlayersByPositionQuery,
 } from "../../store/api/apiSlice";
-import type {
-  User,
-} from "../../store/api/apiSlice";
+import type { User } from "../../store/api/apiSlice";
 import type { RootState } from "../../store";
 
 export const ScoutDashboard: React.FC = () => {

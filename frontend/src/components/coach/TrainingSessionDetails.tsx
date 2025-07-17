@@ -1,11 +1,7 @@
 import React from "react";
 import { X, Clock, MapPin, Users, Target, CheckCircle } from "lucide-react";
-import {
-  useGetTrainingSessionByIdQuery,
-} from "../../store/api/apiSlice";
-import type {
-  TrainingExercise,
-} from "../../store/api/apiSlice";
+import { useGetTrainingSessionByIdQuery } from "../../store/api/apiSlice";
+import type { TrainingExercise } from "../../store/api/apiSlice";
 
 interface TrainingSessionDetailsProps {
   sessionId: string;

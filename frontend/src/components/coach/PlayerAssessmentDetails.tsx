@@ -9,13 +9,8 @@ import {
   FileText,
   Flag,
 } from "lucide-react";
-import {
-  useGetPlayerAssessmentByIdQuery,
-} from "../../store/api/apiSlice";
-import type {
-  SkillAssessment,
-  PlayerGoal,
-} from "../../store/api/apiSlice";
+import { useGetPlayerAssessmentByIdQuery } from "../../store/api/apiSlice";
+import type { SkillAssessment, PlayerGoal } from "../../store/api/apiSlice";
 
 interface PlayerAssessmentDetailsProps {
   assessmentId: string;
