@@ -1,6 +1,11 @@
 import React from "react";
 import { X, Clock, MapPin, Users, Target, CheckCircle } from "lucide-react";
-import { useGetTrainingSessionByIdQuery } from "../../store/api/apiSlice";
+import {
+  useGetTrainingSessionByIdQuery,
+} from "../../store/api/apiSlice";
+import type {
+  TrainingExercise,
+} from "../../store/api/apiSlice";
 
 interface TrainingSessionDetailsProps {
   sessionId: string;
@@ -138,12 +143,14 @@ const TrainingSessionDetails: React.FC<TrainingSessionDetailsProps> = ({
                     Session Objectives
                   </h3>
                   <div className="space-y-2">
-                    {session.objectives.map((objective, index) => (
-                      <div key={index} className="flex items-start gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
-                        <span className="text-gray-700">{objective}</span>
-                      </div>
-                    ))}
+                    {session.objectives.map(
+                      (objective: string, index: number) => (
+                        <div key={index} className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span className="text-gray-700">{objective}</span>
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -170,76 +177,80 @@ const TrainingSessionDetails: React.FC<TrainingSessionDetailsProps> = ({
                     Training Exercises
                   </h3>
                   <div className="space-y-4">
-                    {session.exercises.map((exercise, index) => (
-                      <div
-                        key={index}
-                        className="border border-gray-200 rounded-lg p-4"
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-medium text-gray-900">
-                            {exercise.name}
-                          </h4>
-                          <span className="text-sm text-gray-600">
-                            {exercise.duration} min
-                          </span>
-                        </div>
-
-                        {exercise.description && (
-                          <p className="text-gray-700 text-sm mb-3">
-                            {exercise.description}
-                          </p>
-                        )}
-
-                        {exercise.objectives &&
-                          exercise.objectives.length > 0 && (
-                            <div className="mb-3">
-                              <p className="text-sm font-medium text-gray-700 mb-1">
-                                Objectives:
-                              </p>
-                              <ul className="text-sm text-gray-600 space-y-1">
-                                {exercise.objectives.map((obj, objIndex) => (
-                                  <li
-                                    key={objIndex}
-                                    className="flex items-start gap-2"
-                                  >
-                                    <span className="w-1 h-1 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
-                                    {obj}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-
-                        {exercise.equipment &&
-                          exercise.equipment.length > 0 && (
-                            <div>
-                              <p className="text-sm font-medium text-gray-700 mb-1">
-                                Equipment:
-                              </p>
-                              <div className="flex flex-wrap gap-1">
-                                {exercise.equipment.map(
-                                  (equipment, eqIndex) => (
-                                    <span
-                                      key={eqIndex}
-                                      className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded"
-                                    >
-                                      {equipment}
-                                    </span>
-                                  )
-                                )}
-                              </div>
-                            </div>
-                          )}
-
-                        {exercise.notes && (
-                          <div className="mt-3 pt-3 border-t border-gray-100">
-                            <p className="text-sm text-gray-600 italic">
-                              {exercise.notes}
-                            </p>
+                    {session.exercises.map(
+                      (exercise: TrainingExercise, index: number) => (
+                        <div
+                          key={index}
+                          className="border border-gray-200 rounded-lg p-4"
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="font-medium text-gray-900">
+                              {exercise.name}
+                            </h4>
+                            <span className="text-sm text-gray-600">
+                              {exercise.duration} min
+                            </span>
                           </div>
-                        )}
-                      </div>
-                    ))}
+
+                          {exercise.description && (
+                            <p className="text-gray-700 text-sm mb-3">
+                              {exercise.description}
+                            </p>
+                          )}
+
+                          {exercise.objectives &&
+                            exercise.objectives.length > 0 && (
+                              <div className="mb-3">
+                                <p className="text-sm font-medium text-gray-700 mb-1">
+                                  Objectives:
+                                </p>
+                                <ul className="text-sm text-gray-600 space-y-1">
+                                  {exercise.objectives.map(
+                                    (obj: string, objIndex: number) => (
+                                      <li
+                                        key={objIndex}
+                                        className="flex items-start gap-2"
+                                      >
+                                        <span className="w-1 h-1 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
+                                        {obj}
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              </div>
+                            )}
+
+                          {exercise.equipment &&
+                            exercise.equipment.length > 0 && (
+                              <div>
+                                <p className="text-sm font-medium text-gray-700 mb-1">
+                                  Equipment:
+                                </p>
+                                <div className="flex flex-wrap gap-1">
+                                  {exercise.equipment.map(
+                                    (equipment: string, eqIndex: number) => (
+                                      <span
+                                        key={eqIndex}
+                                        className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded"
+                                      >
+                                        {equipment}
+                                      </span>
+                                    )
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                          {exercise.notes && (
+                            <div className="mt-3 pt-3 border-t border-gray-100">
+                              <p className="text-sm text-gray-600 italic">
+                                {exercise.notes}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -280,19 +291,21 @@ const TrainingSessionDetails: React.FC<TrainingSessionDetailsProps> = ({
                 Participants ({session.participants.length})
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {session.participants.map((participantId, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
-                  >
-                    <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                      <Users className="w-4 h-4 text-gray-600" />
+                {session.participants.map(
+                  (participantId: string, index: number) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+                    >
+                      <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                        <Users className="w-4 h-4 text-gray-600" />
+                      </div>
+                      <span className="text-gray-900">
+                        Player {participantId}
+                      </span>
                     </div>
-                    <span className="text-gray-900">
-                      Player {participantId}
-                    </span>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             </div>
           )}

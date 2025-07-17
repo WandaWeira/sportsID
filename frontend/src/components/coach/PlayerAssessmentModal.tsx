@@ -23,6 +23,7 @@ const PlayerAssessmentModal: React.FC<PlayerAssessmentModalProps> = ({
     useCreatePlayerAssessmentMutation();
 
   const [formData, setFormData] = useState<CreatePlayerAssessmentRequest>({
+    coachId,
     playerId: "",
     type: "Training",
     skills: [],
@@ -78,7 +79,6 @@ const PlayerAssessmentModal: React.FC<PlayerAssessmentModalProps> = ({
       );
 
       await createPlayerAssessment({
-        coachId,
         ...formData,
         strengths: cleanedStrengths,
         areasForImprovement: cleanedImprovements,

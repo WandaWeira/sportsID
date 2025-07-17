@@ -125,6 +125,8 @@ export const CreatePost: React.FC = () => {
         content,
         tags: selectedTags,
         media: mediaFiles,
+        isLiked: false,
+        shares: 0,
       }).unwrap();
 
       setContent("");

@@ -19,6 +19,7 @@ const TrainingSessionModal: React.FC<TrainingSessionModalProps> = ({
     useCreateTrainingSessionMutation();
 
   const [formData, setFormData] = useState<CreateTrainingSessionRequest>({
+    coachId,
     title: "",
     description: "",
     type: "Tactical",
@@ -53,7 +54,6 @@ const TrainingSessionModal: React.FC<TrainingSessionModalProps> = ({
       }));
 
       await createTrainingSession({
-        coachId,
         ...formData,
         objectives: cleanedObjectives,
         exercises: cleanedExercises,

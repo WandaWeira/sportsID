@@ -24,7 +24,7 @@ interface AddPlayerModalProps {
 
 export const AddPlayerModal: React.FC<AddPlayerModalProps> = ({
   onClose,
-  coachId,
+  coachId: _coachId,
   coachClubId,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,10 +40,9 @@ export const AddPlayerModal: React.FC<AddPlayerModalProps> = ({
     isLoading,
     error,
   } = useSearchAvailablePlayersQuery({
-    search: searchTerm,
-    sport: selectedSport || undefined,
+    query: searchTerm,
     position: selectedPosition || undefined,
-    clubId: coachClubId,
+    location: undefined,
   });
 
   const [addPlayerToTeam, { isLoading: isAdding }] =
@@ -63,7 +62,6 @@ export const AddPlayerModal: React.FC<AddPlayerModalProps> = ({
       } else {
         // Direct add for free agents or same club players
         await addPlayerToTeam({
-          coachId,
           playerId: player.id,
         }).unwrap();
         alert(`${player.name} has been successfully added to your team!`);
@@ -80,7 +78,6 @@ export const AddPlayerModal: React.FC<AddPlayerModalProps> = ({
 
     try {
       await sendInvitation({
-        coachId,
         playerId: selectedPlayer.id,
         message: invitationMessage,
       }).unwrap();
@@ -284,7 +281,7 @@ export const AddPlayerModal: React.FC<AddPlayerModalProps> = ({
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {availablePlayers.map((player) => (
+              {availablePlayers.map((player: User) => (
                 <div
                   key={player.id}
                   className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"

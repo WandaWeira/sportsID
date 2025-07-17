@@ -22,6 +22,10 @@ import {
   useDeletePlayerAssessmentMutation,
   useRemovePlayerFromTeamMutation,
 } from "../../store/api/apiSlice";
+import type {
+  TrainingSession,
+  PlayerAssessment,
+} from "../../store/api/apiSlice";
 // Modal Components
 import {
   TrainingSessionModal,
@@ -53,7 +57,7 @@ export const CoachDashboard: React.FC = () => {
     data: coachStats,
     isLoading: statsLoading,
     error: statsError,
-  } = useGetCoachStatsQuery(user?.id || "", {
+  } = useGetCoachStatsQuery(undefined, {
     skip: !user?.id,
   });
   const {
@@ -85,7 +89,7 @@ export const CoachDashboard: React.FC = () => {
     data: myPlayers = [],
     isLoading: playersLoading,
     error: playersError,
-  } = useGetMyPlayersQuery(user?.id || "", {
+  } = useGetMyPlayersQuery(undefined, {
     skip: !user?.id,
   });
 
@@ -148,10 +152,7 @@ export const CoachDashboard: React.FC = () => {
       window.confirm("Are you sure you want to delete this training session?")
     ) {
       try {
-        await deleteTrainingSession({
-          coachId: user?.id || "",
-          sessionId,
-        }).unwrap();
+        await deleteTrainingSession(sessionId).unwrap();
       } catch (error) {
         console.error("Failed to delete session:", error);
         alert("Failed to delete training session. Please try again.");
@@ -162,10 +163,7 @@ export const CoachDashboard: React.FC = () => {
   const handleDeleteAssessment = async (assessmentId: string) => {
     if (window.confirm("Are you sure you want to delete this assessment?")) {
       try {
-        await deletePlayerAssessment({
-          coachId: user?.id || "",
-          assessmentId,
-        }).unwrap();
+        await deletePlayerAssessment(assessmentId).unwrap();
       } catch (error) {
         console.error("Failed to delete assessment:", error);
         alert("Failed to delete assessment. Please try again.");
@@ -180,10 +178,7 @@ export const CoachDashboard: React.FC = () => {
       )
     ) {
       try {
-        await removePlayerFromTeam({
-          coachId: user?.id || "",
-          playerId,
-        }).unwrap();
+        await removePlayerFromTeam(playerId).unwrap();
       } catch (error) {
         console.error("Failed to remove player:", error);
         alert("Failed to remove player. Please try again.");
@@ -251,38 +246,40 @@ export const CoachDashboard: React.FC = () => {
                 No training sessions yet
               </div>
             ) : (
-              trainingSessions.slice(0, 3).map((session, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
-                >
-                  <div>
-                    <h3 className="font-medium text-gray-900">
-                      {session.title}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {new Date(session.date).toLocaleDateString()} •{" "}
-                      {session.duration} min
-                    </p>
+              trainingSessions
+                .slice(0, 3)
+                .map((session: TrainingSession, index: number) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
+                  >
+                    <div>
+                      <h3 className="font-medium text-gray-900">
+                        {session.title}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {new Date(session.date).toLocaleDateString()} •{" "}
+                        {session.duration} min
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-gray-900">
+                        {session.participants?.length || 0} players
+                      </p>
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full ${
+                          session.status === "Completed"
+                            ? "bg-green-100 text-green-800"
+                            : session.status === "Scheduled"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {session.status}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">
-                      {session.participants?.length || 0} players
-                    </p>
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full ${
-                        session.status === "Completed"
-                          ? "bg-green-100 text-green-800"
-                          : session.status === "Scheduled"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-gray-100 text-gray-800"
-                      }`}
-                    >
-                      {session.status}
-                    </span>
-                  </div>
-                </div>
-              ))
+                ))
             )}
           </div>
         </div>
@@ -317,30 +314,32 @@ export const CoachDashboard: React.FC = () => {
                 No assessments yet
               </div>
             ) : (
-              playerAssessments.slice(0, 3).map((assessment, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
-                >
-                  <div>
-                    <h3 className="font-medium text-gray-900">
-                      {assessment.playerName}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {assessment.type} •{" "}
-                      {new Date(assessment.date).toLocaleDateString()}
-                    </p>
+              playerAssessments
+                .slice(0, 3)
+                .map((assessment: PlayerAssessment, index: number) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
+                  >
+                    <div>
+                      <h3 className="font-medium text-gray-900">
+                        {assessment.playerName}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {assessment.type} •{" "}
+                        {new Date(assessment.date).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-gray-900">
+                        Rating: {assessment.overallRating}/10
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {assessment.playerPosition}
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">
-                      Rating: {assessment.overallRating}/10
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {assessment.playerPosition}
-                    </p>
-                  </div>
-                </div>
-              ))
+                ))
             )}
           </div>
         </div>
@@ -470,7 +469,7 @@ export const CoachDashboard: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {trainingSessions.map((session) => (
+              {trainingSessions.map((session: TrainingSession) => (
                 <tr key={session.id} className="border-b border-gray-100">
                   <td className="py-3 px-4">
                     <div>
@@ -595,7 +594,7 @@ export const CoachDashboard: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {playerAssessments.map((assessment) => (
+              {playerAssessments.map((assessment: PlayerAssessment) => (
                 <tr key={assessment.id} className="border-b border-gray-100">
                   <td className="py-3 px-4">
                     <p className="font-medium text-gray-900">

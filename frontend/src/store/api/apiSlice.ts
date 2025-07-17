@@ -857,6 +857,197 @@ export const api = createApi({
       }),
       invalidatesTags: ['Club'],
     }),
+
+    // Scout endpoints
+    getShortlistedPlayers: builder.query<User[], void>({
+      query: () => '/scouts/shortlist',
+      providesTags: ['User'],
+    }),
+    addToShortlist: builder.mutation<void, string>({
+      query: (playerId) => ({
+        url: `/scouts/shortlist/${playerId}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['User'],
+    }),
+    createScoutReport: builder.mutation<ScoutReport, Omit<ScoutReport, 'id' | 'date'>>({
+      query: (report) => ({
+        url: '/scout-reports',
+        method: 'POST',
+        body: report,
+      }),
+      invalidatesTags: ['User'],
+    }),
+    getPlayersByPosition: builder.query<User[], { position?: string; location?: string }>({
+      query: (params) => ({
+        url: '/players/by-position',
+        params,
+      }),
+      providesTags: ['User'],
+    }),
+
+    // Coach endpoints
+    getCoachStats: builder.query<CoachStats, void>({
+      query: () => '/coaches/stats',
+      providesTags: ['User'],
+    }),
+    getTrainingSessions: builder.query<TrainingSession[], { coachId?: string; status?: string }>({
+      query: (params) => ({
+        url: '/training-sessions',
+        params,
+      }),
+      providesTags: ['TrainingSession'],
+    }),
+    getTrainingSessionById: builder.query<TrainingSession, string>({
+      query: (id) => `/training-sessions/${id}`,
+      providesTags: ['TrainingSession'],
+    }),
+    createTrainingSession: builder.mutation<TrainingSession, CreateTrainingSessionRequest>({
+      query: (session) => ({
+        url: '/training-sessions',
+        method: 'POST',
+        body: session,
+      }),
+      invalidatesTags: ['TrainingSession'],
+    }),
+    updateTrainingSession: builder.mutation<TrainingSession, UpdateTrainingSessionRequest>({
+      query: ({ id, ...data }) => ({
+        url: `/training-sessions/${id}`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: ['TrainingSession'],
+    }),
+    deleteTrainingSession: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/training-sessions/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['TrainingSession'],
+    }),
+    addPlayerToSession: builder.mutation<void, { sessionId: string; playerId: string }>({
+      query: ({ sessionId, playerId }) => ({
+        url: `/training-sessions/${sessionId}/players`,
+        method: 'POST',
+        body: { playerId },
+      }),
+      invalidatesTags: ['TrainingSession'],
+    }),
+    removePlayerFromSession: builder.mutation<void, { sessionId: string; playerId: string }>({
+      query: ({ sessionId, playerId }) => ({
+        url: `/training-sessions/${sessionId}/players/${playerId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['TrainingSession'],
+    }),
+    getPlayerAssessments: builder.query<PlayerAssessment[], { coachId?: string; playerId?: string }>({
+      query: (params) => ({
+        url: '/player-assessments',
+        params,
+      }),
+      providesTags: ['PlayerAssessment'],
+    }),
+    getPlayerAssessmentById: builder.query<PlayerAssessment, string>({
+      query: (id) => `/player-assessments/${id}`,
+      providesTags: ['PlayerAssessment'],
+    }),
+    createPlayerAssessment: builder.mutation<PlayerAssessment, CreatePlayerAssessmentRequest>({
+      query: (assessment) => ({
+        url: '/player-assessments',
+        method: 'POST',
+        body: assessment,
+      }),
+      invalidatesTags: ['PlayerAssessment'],
+    }),
+    updatePlayerAssessment: builder.mutation<PlayerAssessment, UpdatePlayerAssessmentRequest>({
+      query: ({ id, ...data }) => ({
+        url: `/player-assessments/${id}`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: ['PlayerAssessment'],
+    }),
+    deletePlayerAssessment: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/player-assessments/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['PlayerAssessment'],
+    }),
+    getPlayerProgress: builder.query<PlayerAssessment[], { playerId: string; timeframe?: string }>({
+      query: (params) => ({
+        url: '/player-assessments/progress',
+        params,
+      }),
+      providesTags: ['PlayerAssessment'],
+    }),
+    getMyPlayers: builder.query<User[], void>({
+      query: () => '/coaches/my-players',
+      providesTags: ['User'],
+    }),
+    updateCoachProfile: builder.mutation<User, Partial<User>>({
+      query: (data) => ({
+        url: '/coaches/profile',
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: ['User'],
+    }),
+    addCoachAchievement: builder.mutation<void, { title: string; year: number; description: string; level: string }>({
+      query: (achievement) => ({
+        url: '/coaches/achievements',
+        method: 'POST',
+        body: achievement,
+      }),
+      invalidatesTags: ['User'],
+    }),
+    updateCoachAchievement: builder.mutation<void, { id: string; data: { title?: string; year?: number; description?: string; level?: string } }>({
+      query: ({ id, data }) => ({
+        url: `/coaches/achievements/${id}`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: ['User'],
+    }),
+    deleteCoachAchievement: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/coaches/achievements/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['User'],
+    }),
+
+    // Coach player management
+    searchAvailablePlayers: builder.query<User[], { query?: string; position?: string; location?: string }>({
+      query: (params) => ({
+        url: '/coaches/search-players',
+        params,
+      }),
+      providesTags: ['User'],
+    }),
+    addPlayerToTeam: builder.mutation<void, { playerId: string }>({
+      query: ({ playerId }) => ({
+        url: '/coaches/team/players',
+        method: 'POST',
+        body: { playerId },
+      }),
+      invalidatesTags: ['User'],
+    }),
+    removePlayerFromTeam: builder.mutation<void, string>({
+      query: (playerId) => ({
+        url: `/coaches/team/players/${playerId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['User'],
+    }),
+    sendPlayerInvitation: builder.mutation<void, { playerId: string; message?: string }>({
+      query: ({ playerId, message }) => ({
+        url: '/coaches/invitations',
+        method: 'POST',
+        body: { playerId, message },
+      }),
+      invalidatesTags: ['User'],
+    }),
   }),
 });
 

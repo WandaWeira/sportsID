@@ -9,7 +9,13 @@ import {
   FileText,
   Flag,
 } from "lucide-react";
-import { useGetPlayerAssessmentByIdQuery } from "../../store/api/apiSlice";
+import {
+  useGetPlayerAssessmentByIdQuery,
+} from "../../store/api/apiSlice";
+import type {
+  SkillAssessment,
+  PlayerGoal,
+} from "../../store/api/apiSlice";
 
 interface PlayerAssessmentDetailsProps {
   assessmentId: string;
@@ -149,32 +155,34 @@ const PlayerAssessmentDetails: React.FC<PlayerAssessmentDetailsProps> = ({
                     Skills Assessment
                   </h3>
                   <div className="space-y-3">
-                    {assessment.skills.map((skill, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
-                      >
-                        <div className="flex-1">
-                          <p className="font-medium text-gray-900">
-                            {skill.skill}
-                          </p>
-                          {skill.notes && (
-                            <p className="text-sm text-gray-600 mt-1">
-                              {skill.notes}
-                            </p>
-                          )}
-                        </div>
+                    {assessment.skills.map(
+                      (skill: SkillAssessment, index: number) => (
                         <div
-                          className={`px-3 py-1 rounded-full text-sm font-medium ${getRatingBgColor(
-                            skill.rating
-                          )}`}
+                          key={index}
+                          className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
                         >
-                          <span className={getRatingColor(skill.rating)}>
-                            {skill.rating}/10
-                          </span>
+                          <div className="flex-1">
+                            <p className="font-medium text-gray-900">
+                              {skill.skill}
+                            </p>
+                            {skill.notes && (
+                              <p className="text-sm text-gray-600 mt-1">
+                                {skill.notes}
+                              </p>
+                            )}
+                          </div>
+                          <div
+                            className={`px-3 py-1 rounded-full text-sm font-medium ${getRatingBgColor(
+                              skill.rating
+                            )}`}
+                          >
+                            <span className={getRatingColor(skill.rating)}>
+                              {skill.rating}/10
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -187,7 +195,7 @@ const PlayerAssessmentDetails: React.FC<PlayerAssessmentDetailsProps> = ({
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
                   {Object.entries(assessment.physicalMetrics).map(
-                    ([metric, value]) =>
+                    ([metric, value]: [string, number | undefined]) =>
                       value !== undefined && (
                         <div
                           key={metric}
@@ -217,7 +225,7 @@ const PlayerAssessmentDetails: React.FC<PlayerAssessmentDetailsProps> = ({
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
                   {Object.entries(assessment.mentalAttributes).map(
-                    ([attribute, value]) =>
+                    ([attribute, value]: [string, number | undefined]) =>
                       value !== undefined && (
                         <div
                           key={attribute}
@@ -249,15 +257,17 @@ const PlayerAssessmentDetails: React.FC<PlayerAssessmentDetailsProps> = ({
                     Strengths
                   </h3>
                   <div className="space-y-2">
-                    {assessment.strengths.map((strength, index) => (
-                      <div
-                        key={index}
-                        className="flex items-start gap-2 p-3 bg-green-50 border border-green-200 rounded-lg"
-                      >
-                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-700">{strength}</span>
-                      </div>
-                    ))}
+                    {assessment.strengths.map(
+                      (strength: string, index: number) => (
+                        <div
+                          key={index}
+                          className="flex items-start gap-2 p-3 bg-green-50 border border-green-200 rounded-lg"
+                        >
+                          <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                          <span className="text-gray-700">{strength}</span>
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -270,15 +280,17 @@ const PlayerAssessmentDetails: React.FC<PlayerAssessmentDetailsProps> = ({
                       Areas for Improvement
                     </h3>
                     <div className="space-y-2">
-                      {assessment.areasForImprovement.map((area, index) => (
-                        <div
-                          key={index}
-                          className="flex items-start gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg"
-                        >
-                          <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700">{area}</span>
-                        </div>
-                      ))}
+                      {assessment.areasForImprovement.map(
+                        (area: string, index: number) => (
+                          <div
+                            key={index}
+                            className="flex items-start gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg"
+                          >
+                            <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <span className="text-gray-700">{area}</span>
+                          </div>
+                        )
+                      )}
                     </div>
                   </div>
                 )}
@@ -292,7 +304,7 @@ const PlayerAssessmentDetails: React.FC<PlayerAssessmentDetailsProps> = ({
                     </h3>
                     <div className="space-y-2">
                       {assessment.recommendations.map(
-                        (recommendation, index) => (
+                        (recommendation: string, index: number) => (
                           <div
                             key={index}
                             className="flex items-start gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg"
@@ -318,7 +330,7 @@ const PlayerAssessmentDetails: React.FC<PlayerAssessmentDetailsProps> = ({
                 Development Goals
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {assessment.goals.map((goal, index) => (
+                {assessment.goals.map((goal: PlayerGoal, index: number) => (
                   <div
                     key={index}
                     className="border border-gray-200 rounded-lg p-4"

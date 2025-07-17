@@ -16,8 +16,10 @@ import {
 } from "lucide-react";
 import {
   useGetShortlistedPlayersQuery,
-  useCreateScoutReportMutation,
   useGetPlayersByPositionQuery,
+} from "../../store/api/apiSlice";
+import type {
+  User,
 } from "../../store/api/apiSlice";
 import type { RootState } from "../../store";
 
@@ -32,7 +34,7 @@ export const ScoutDashboard: React.FC = () => {
   });
 
   const { data: shortlistedPlayers, isLoading: shortlistLoading } =
-    useGetShortlistedPlayersQuery(user?.id || "", { skip: !user?.id });
+    useGetShortlistedPlayersQuery(undefined, { skip: !user?.id });
 
   const { data: availablePlayers, isLoading: playersLoading } =
     useGetPlayersByPositionQuery(searchFilters, {
@@ -322,7 +324,7 @@ export const ScoutDashboard: React.FC = () => {
                 </div>
               ) : shortlistedPlayers && shortlistedPlayers.length > 0 ? (
                 <div className="space-y-4">
-                  {shortlistedPlayers.map((player) => (
+                  {shortlistedPlayers.map((player: User) => (
                     <PlayerCard
                       key={player.id}
                       player={player}
@@ -460,7 +462,7 @@ export const ScoutDashboard: React.FC = () => {
                   </div>
                 ) : availablePlayers && availablePlayers.length > 0 ? (
                   <div className="space-y-4">
-                    {availablePlayers.map((player) => (
+                    {availablePlayers.map((player: User) => (
                       <PlayerCard key={player.id} player={player} />
                     ))}
                   </div>
