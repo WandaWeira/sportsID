@@ -4,7 +4,7 @@
   "description": "Backend API for Sporty - Sports Social Network",
   "main": "dist/server.js",
   "_moduleAliases": {
-    "@": "src"
+    "@": "dist"
   },
   "scripts": {
     "build": "tsc",
